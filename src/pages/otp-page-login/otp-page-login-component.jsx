@@ -42,7 +42,7 @@ const OtpPageLoginComponent = () => {
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("refreshToken", response.data.refreshToken);
           localStorage.setItem("user", JSON.stringify(response.data.user));
-          navigator("/agh-assessments");
+          navigator("/superadmin-homepage");
         } catch (err) {
           toast.error(err.response.data.message || "Something went wrong");
         } finally {

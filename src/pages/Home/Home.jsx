@@ -66,6 +66,8 @@ const Home = () => {
   if (token && user && Object?.hasOwn(user, "accountType")) {
     if (user?.accountType === "User") {
       return <Navigate to={"/agh-tests"} replace={true} />;
+    } else if (user?.accountType === "SuperAdmin") {
+      return <Navigate to={"/superadmin-homepage"} replace={true} />;
     } else {
       return <Navigate to={"/agh-assessments"} replace={true} />;
     }

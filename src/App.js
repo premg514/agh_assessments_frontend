@@ -7,6 +7,7 @@ import AdminLoginComponent from "./pages/admin/login/admin-login-component";
 import UserLoginComponent from "./pages/user/login/user-login-component";
 import SuperAdminLoginComponent from "./pages/super-admin/login-page/login-component";
 import CollegeCourseDetailsComponent from "./pages/super-admin/college-course-details/college-course-details-component";
+import ListOfCollegeComponent from "./pages/list-of-colleges/list-of-colleges-component";
 import CollegeAssessments from "./pages/super-admin/college-assessments/CollegeAssessments";
 import SAGHEditPage from "./pages/super-admin/college-assessments/SAGHEditPage";
 import Home from "./pages/Home/Home";
@@ -236,6 +237,14 @@ const App = () => {
 
       {user !== null && user.accountType === "SuperAdmin" && (
         <>
+          <Route
+            path="/superadmin-homepage"
+            element={
+              <>
+                <ListOfCollegeComponent />
+              </>
+            }
+          />
           <Route
             path="/college-course-details/:adminId"
             element={

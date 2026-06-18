@@ -23,7 +23,7 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import BulbAnimation from "../../../component/BulbAnimation";
 import { Button } from "../../user/login/user-login-style";
-import { FiChevronLeft, FiEdit } from "react-icons/fi";
+import { FiChevronLeft } from "react-icons/fi";
 import { differenceInDays, format } from "date-fns";
 
 const CollegeCourseDetailsComponent = () => {
@@ -85,69 +85,6 @@ const CollegeCourseDetailsComponent = () => {
                   <Button
                     className="w-fit"
                     onClick={() => {
-                      navigate(`/add-new-course-access/${id}`, {
-                        state: { collegeName: collegeName },
-                      });
-                    }}
-                  >
-                    + New Access
-                  </Button>
-                  <Button
-                    className="w-fit"
-                    onClick={() => {
-                      navigate(`companies`);
-                    }}
-                  >
-                    Companies
-                  </Button>
-                  <Button
-                    className="w-fit"
-                    onClick={() => {
-                      navigate(`/college-course-config-details/${id}`);
-                    }}
-                  >
-                    Configure
-                  </Button>
-                  <Button
-                    className="w-fit"
-                    onClick={() => {
-                      navigate(`/mock-interview-scheduled/${id}`);
-                    }}
-                  >
-                    Mock Interview
-                  </Button>
-
-                  <Button
-                    className="w-fit"
-                    onClick={() => {
-                      navigate(`lsrw-tests`);
-                    }}
-                  >
-                    Lsrw Tests
-                  </Button>
-                  <Button
-                    className="w-fit"
-                    onClick={() => {
-                      navigate(`assessments/technical`, {
-                        state: { collegeName, adminId: id },
-                      });
-                    }}
-                  >
-                    Technical Assessment
-                  </Button>
-                  <Button
-                    className="w-fit"
-                    onClick={() => {
-                      navigate(`assessments/aptitude`, {
-                        state: { collegeName, adminId: id },
-                      });
-                    }}
-                  >
-                    Aptitude Assessment
-                  </Button>
-                  <Button
-                    className="w-fit"
-                    onClick={() => {
                       navigate(`assessments/agh`, {
                         state: { collegeName, adminId: id },
                       });
@@ -172,7 +109,6 @@ const CollegeCourseDetailsComponent = () => {
                     <th>UG/PG</th>
                     <th>Days Left</th>
                     <th>Department</th>
-                    <th>Actions</th>
                   </TableRow>
                 </thead>
                 <tbody>
@@ -217,21 +153,6 @@ const CollegeCourseDetailsComponent = () => {
                               <span>+ {key?.departments?.length - 3}</span>
                             ) : null}
                           </div>
-                        </td>
-                      
-                        <td>
-                          <button
-                            className="edit_btn"
-                            onClick={() => {
-                              navigate(`/edit-course-access/${key?._id}`, {
-                                state: { collegeName: collegeName },
-                              });
-                            }}
-                          >
-                            <FiEdit
-                              style={{ cursor: "pointer", fontSize: "1.2rem" }}
-                            />
-                          </button>
                         </td>
                       </tr>
                     );

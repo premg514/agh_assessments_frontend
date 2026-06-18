@@ -55,11 +55,6 @@ const Header = () => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, [showProfile]);
 
-  const isAdmin =
-    user?.accountType === "Admin" ||
-    user?.accountType === "JuniorCollegeAdmin" ||
-    user?.accountType === "SuperAdmin";
-
   return (
     <>
       <HeaderStyled value={showHeader ? "0" : "-100%"}>
@@ -92,7 +87,8 @@ const Header = () => {
                   </Link>
                 </li>
               )}
-              {isAdmin && (
+              {(user?.accountType === "Admin" ||
+                user?.accountType === "JuniorCollegeAdmin") && (
                 <li>
                   <Link
                     to="/agh-assessments"
@@ -103,6 +99,21 @@ const Header = () => {
                     }`}
                   >
                     AGH Assessments
+                  </Link>
+                </li>
+              )}
+              {user?.accountType === "SuperAdmin" && (
+                <li>
+                  <Link
+                    to="/superadmin-homepage"
+                    className={`link ${
+                      location.pathname.startsWith("/superadmin-homepage") ||
+                      location.pathname.startsWith("/college-course-details")
+                        ? "active_navlink"
+                        : ""
+                    }`}
+                  >
+                    Colleges
                   </Link>
                 </li>
               )}
@@ -190,9 +201,15 @@ const Header = () => {
               </div>
               <ul>
                 <li>
-                  <Link className="link" to="/agh-assessments">
-                    AGH Assessments
-                  </Link>
+                  {user?.accountType === "SuperAdmin" ? (
+                    <Link className="link" to="/superadmin-homepage">
+                      Colleges
+                    </Link>
+                  ) : (
+                    <Link className="link" to="/agh-assessments">
+                      AGH Assessments
+                    </Link>
+                  )}
                 </li>
               </ul>
               <div className="button__box">
