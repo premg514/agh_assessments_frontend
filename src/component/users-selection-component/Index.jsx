@@ -9,7 +9,6 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { reactSelectTheme } from "../../theme";
 import { useIsThemeDark } from "../../hooks/useIsThemeDark";
 import { departmentOptions } from "../../data/departmentData";
-import useCollegeOptions from "../../hooks/useCollegeOptions";
 import Select from "react-select";
 import {
   UsersSelectionStyle,
@@ -102,8 +101,10 @@ const UsersSelection = ({
   collegeOptions: collegeOptionsProp,
   excludedUserIds = [],
 }) => {
-  const { collegeOptions: fetchedCollegeOptions } = useCollegeOptions();
-  const collegeOptions = collegeOptionsProp ?? fetchedCollegeOptions;
+  // College list is only used by the optional `showCollegeFilter` dropdown,
+  // which no caller enables in this AGH-only project. Fall back to the prop (or
+  // an empty list) instead of fetching from a non-existent /college endpoint.
+  const collegeOptions = collegeOptionsProp ?? [];
   const [search, setSearch] = useState("");
   const [colleges, setColleges] = useState([]);
   const [departments, setDepartments] = useState([]);

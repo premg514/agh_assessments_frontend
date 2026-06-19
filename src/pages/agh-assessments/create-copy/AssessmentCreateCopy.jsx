@@ -29,7 +29,7 @@ const AssessmentCreateCopy = ({ assignMode = false }) => {
   const { token } = useSelector((state) => state.auth);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["agh-assessment", assessmentId, token, "create-copy"],
+    queryKey: ["agh-assessment", assessmentId, token, "create-copy", assignMode],
     queryFn: fetchAGHAssessment,
     enabled: !!assessmentId,
     select: (res) => {
@@ -48,6 +48,9 @@ const AssessmentCreateCopy = ({ assignMode = false }) => {
         usersWhoCompleted: [],
         usersWhoAttempting: [],
         isResultPublished: false,
+        // When assigning to another college, the previously selected students
+        // belong to the original college and must not carry over.
+        ...(assignMode ? { scheduledForUsers: [] } : {}),
       };
     },
   });
