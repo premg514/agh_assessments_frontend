@@ -89,14 +89,6 @@ const axiosInstance = axios.create({});
 
 axiosInstance.interceptors.response.use(onFullFillApiCall, onRejectApiCall);
 
-export const apiConnector = async (method, url, bodyData, headers, params) => {
-  return axiosInstance({
-    method,
-    url,
-    data: bodyData,
-    headers,
-    params,
-  });
-};
+
 
 export default axiosInstance;

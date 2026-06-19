@@ -235,35 +235,6 @@ export const InputField = ({
     </InputWrapper>
   );
 };
-export const TextFieldCode = ({
-  register,
-  error,
-  name,
-  placeholder,
-  labelText,
-  style,
-  onChange,
-}) => (
-  <InputWrapper>
-    {labelText && <label htmlFor={name}>{labelText}</label>}
-    <InputContainerWithOutIcon>
-      <textarea
-        type="text"
-        id={name}
-        placeholder={placeholder}
-        {...register}
-        onChange={onChange}
-        style={style}
-      />
-    </InputContainerWithOutIcon>
-    {error && (
-      <WarningText>
-        <p>{error?.message || "This field is required"}</p>
-      </WarningText>
-    )}
-  </InputWrapper>
-);
-
 const StyledDropzone = styled.div`
   border: 2px dashed ${({ theme }) => theme.border.primary};
   padding: 20px;

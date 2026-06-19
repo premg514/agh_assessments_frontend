@@ -21,7 +21,7 @@ import { AppContext } from "../../../context/AppContext";
 import FlashoutPageComponent from "../../../component/flash-out-page/flash-out-page-component";
 import ConfirmationComponent from "../../../component/confirmation/confirmation-component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import {
   Layout,
   HeaderRow,
@@ -35,8 +35,6 @@ import {
   AssessmentGrid,
   AssessmentCard,
   CardActions,
-  FormGrid,
-  Field,
   Input,
   PaginationBar,
   PaginationButton,
@@ -45,9 +43,6 @@ import {
   DeleteConfirmationInput,
 } from "./CollegeAssessments.styles";
 import { Button } from "../../user/login/user-login-style";
-import PublistTestComponent from "../../../pages/admin/publish-test/publish-test-component";
-import PublistTestEditComponent from "../../../pages/admin/publish-test-edit/publish-test-edit-component";
-import EditTestComponent from "../../../pages/edit-test/edit-test-component";
 
 const CollegeAssessments = () => {
   const { adminId, type } = useParams();
@@ -66,23 +61,23 @@ const CollegeAssessments = () => {
   const [activeTab, setActiveTab] = useState(tabParam);
 
   const [collegeData, setCollegeData] = useState(null);
-  const [selectedSchedulingTest, setSelectedSchedulingTest] = useState(null);
-  const [confirmAssignData, setConfirmAssignData] = useState(null);
-  const [confirmUnassignData, setConfirmUnassignData] = useState(null);
   const [confirmDeleteData, setConfirmDeleteData] = useState(null);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
-  const [scheduleForm, setScheduleForm] = useState({
-    startDateTime: "",
-    endDateTime: "",
-    choice: "department",
-    departments: [],
-    year: "1",
-    ugorpg: "UG",
-  });
 
   const [persistentCollegeName, setPersistentCollegeName] = useState(
     state?.collegeName || "",
   );
+
+  // This is an AGH-only project. The `:type` route param must always be "agh";
+  // any other value (e.g. a manually-typed /assessments/technical URL) is sent
+  // back to the college page so the non-AGH code paths can never run.
+  const isAghType = type === "agh";
+
+  useEffect(() => {
+    if (type && !isAghType) {
+      navigate(`/college-course-details/${adminId}`, { replace: true });
+    }
+  }, [type, isAghType, adminId, navigate]);
 
   const fetchCollegeData = async () => {
     try {
@@ -151,7 +146,6 @@ const CollegeAssessments = () => {
     tabParam === "available"
       ? availableAssessmentsQuery.data?.pagination
       : activeCollegeData?.pagination;
-  const creatorOptions = availableAssessmentsQuery.data?.creatorOptions || [];
   const loading =
     tabParam === "available"
       ? availableAssessmentsQuery.isLoading
@@ -181,25 +175,6 @@ const CollegeAssessments = () => {
     });
   };
 
-  const assignAssessmentMutation = useMutation({
-    mutationFn: (assessmentId) =>
-      axiosInstance.post(
-        `${import.meta.env.VITE_BASE_URL}/v1/superadmin-assessments/${type}/assign`,
-        { adminId, assessmentId },
-        { headers: { Authorization: `Bearer ${token}` } },
-      ),
-    onSuccess: () => {
-      toast.success("Assessment assigned successfully");
-      setConfirmAssignData(null);
-      invalidateAssessmentQueries();
-    },
-    onError: (error) => {
-      toast.error(
-        error.response?.data?.message || "Failed to assign assessment",
-      );
-    },
-  });
-
   const deleteAGHAssessmentMutation = useMutation({
     mutationFn: (assessmentId) =>
       axiosInstance.delete(
@@ -220,38 +195,7 @@ const CollegeAssessments = () => {
     },
   });
 
-  const scheduleAGHAssessmentMutation = useMutation({
-    mutationFn: (payload) =>
-      axiosInstance.post(
-        `${import.meta.env.VITE_BASE_URL}/v1/superadmin-assessments/agh/schedule`,
-        payload,
-        { headers: { Authorization: `Bearer ${token}` } },
-      ),
-    onSuccess: () => {
-      toast.success("Assessment scheduled successfully");
-      setPopupbox(false);
-      invalidateAssessmentQueries();
-    },
-    onError: (error) => {
-      toast.error(
-        error.response?.data?.message || "Failed to schedule assessment",
-      );
-    },
-  });
-
-  const handleAssign = (assessmentId) => {
-    assignAssessmentMutation.mutate(assessmentId);
-  };
-
-  const handleScheduleClick = (test) => {
-    setSelectedSchedulingTest(test);
-    const isReschedule = !!test.startDateTime;
-    setComponentName(isReschedule ? "publishtestedit" : "publishtest");
-    setPopupbox(true);
-  };
-
   // For AGH: navigate to dedicated edit page instead of opening a modal
-
   const handleEditAssignedClick = (item) => {
     const encodedCollegeName = encodeURIComponent(persistentCollegeName || "");
     if (item.isGlobal) {
@@ -265,25 +209,6 @@ const CollegeAssessments = () => {
         `/college-course-details/${adminId}/assessments/agh/edit/${item._id}?mode=edit-assigned&collegeName=${encodedCollegeName}`,
       );
     }
-  };
-
-  const handleSchedule = (e) => {
-    e.preventDefault();
-    if (type !== "agh") {
-      return;
-    }
-
-    scheduleAGHAssessmentMutation.mutate({
-      adminId,
-      assessmentId: selectedSchedulingTest._id,
-      startDateTime: scheduleForm.startDateTime,
-      endDateTime: scheduleForm.endDateTime,
-      filters: {
-        departments: scheduleForm.departments,
-        year: scheduleForm.year,
-        ugOrPg: scheduleForm.ugorpg,
-      },
-    });
   };
 
   const handleTabChange = (newTab) => {
@@ -301,15 +226,6 @@ const CollegeAssessments = () => {
     });
   };
 
-  const handleCreatorChange = (e) => {
-    setSearchParams({
-      tab: tabParam,
-      search,
-      creatorAdminId: e.target.value,
-      page: "1",
-    });
-  };
-
   const handlePageChange = (nextPage) => {
     setSearchParams({
       tab: tabParam,
@@ -320,30 +236,17 @@ const CollegeAssessments = () => {
   };
 
   useEffect(() => {
-    if (type === "agh" && tabParam === "scheduled") {
+    if (tabParam === "scheduled") {
       setSearchParams(
         { tab: "assigned", search, creatorAdminId, page: "1" },
         { replace: true },
       );
     }
-  }, [type, tabParam, search, creatorAdminId, setSearchParams]);
+  }, [tabParam, search, creatorAdminId, setSearchParams]);
 
   const getAssignedItems = () => {
     if (!activeCollegeData) return [];
-    if (tabParam === "scheduled") {
-      if (type === "aptitude") return activeCollegeData.scheduledAptitude || [];
-      if (type === "technical")
-        return activeCollegeData.scheduledTechnical || [];
-      if (type === "agh")
-        return (activeCollegeData.agh || []).filter(
-          (item) => item.scheduledForUsers?.length > 0 || item.startDateTime,
-        );
-      return [];
-    }
-    if (type === "aptitude") return activeCollegeData.aptitude || [];
-    if (type === "technical") return activeCollegeData.technical || [];
-    if (type === "agh") return activeCollegeData.agh || [];
-    return [];
+    return activeCollegeData.agh || [];
   };
 
   const getSourceItems = () => {
@@ -360,55 +263,6 @@ const CollegeAssessments = () => {
 
   const flashoutpageFunction = () => {
     switch (componentName) {
-      case "publishtest": {
-        const schedTestId =
-          selectedSchedulingTest?.AptitudeTestsId ||
-          selectedSchedulingTest?.adminTechnicalTest ||
-          selectedSchedulingTest?._id;
-        return (
-          <PublistTestComponent
-            type={type === "aptitude" ? "Aptitude" : "Technical"}
-            testId={schedTestId}
-            adminId={adminId}
-          />
-        );
-      }
-      case "publishtestedit":
-        return (
-          <PublistTestEditComponent
-            type={type === "aptitude" ? "Aptitude" : "Technical"}
-            testId={selectedSchedulingTest?._id}
-            adminId={adminId}
-          />
-        );
-      case "edit-assigned":
-        // AGH edit-assigned now uses a dedicated page; non-agh still uses modal
-        return (
-          <EditTestComponent
-            onbehalfOfAccountType={"Admin"}
-            data={selectedSchedulingTest}
-            testId={selectedSchedulingTest?._id}
-            type={type === "aptitude" ? "Aptitude" : "Technical"}
-            subType={"nonELearning"}
-            isAssignMode={false}
-            handleClickClose={() => {
-              setPopupbox(false);
-            }}
-          />
-        );
-      case "confirm-assign":
-        return (
-          <ConfirmationComponent
-            title="Confirm Assignment"
-            detail="Are you sure you want to assign this test to the college?"
-            confirmLabel="Yes, Assign"
-            handleClickCancel={() => setPopupbox(false)}
-            onClick={() => {
-              handleAssign(confirmAssignData.id);
-              setPopupbox(false);
-            }}
-          />
-        );
       case "confirm-delete-agh":
         return (
           <ConfirmationComponent
@@ -454,6 +308,8 @@ const CollegeAssessments = () => {
     }
   }, [popupbox, tabParam]);
 
+  if (!isAghType) return null;
+
   return (
     <>
       <Layout>
@@ -467,7 +323,7 @@ const CollegeAssessments = () => {
             </BackButton>
             <div style={{ marginTop: "16px" }}>
               <h1 style={{ margin: 0, fontSize: "24px", color: "#101828" }}>
-                {type.charAt(0).toUpperCase() + type.slice(1)} Assessments
+                AGH Assessments
               </h1>
               <Meta>{persistentCollegeName || "Loading..."}</Meta>
             </div>
@@ -478,13 +334,9 @@ const CollegeAssessments = () => {
                 const encodedCollegeName = encodeURIComponent(
                   persistentCollegeName || "",
                 );
-                const route =
-                  type === "agh"
-                    ? `/agh-assessments/create-assessment?adminId=${adminId}&collegeName=${encodedCollegeName}`
-                    : type === "technical"
-                      ? `/create-technical-test-admin?adminId=${adminId}`
-                      : `/create-aptitude-test-admin?adminId=${adminId}`;
-                navigate(route);
+                navigate(
+                  `/agh-assessments/create-assessment?adminId=${adminId}&collegeName=${encodedCollegeName}`,
+                );
               }}
               style={{
                 display: "flex",
@@ -493,8 +345,7 @@ const CollegeAssessments = () => {
                 padding: "10px 16px",
               }}
             >
-              <FiPlus /> Create New{" "}
-              {type.charAt(0).toUpperCase() + type.slice(1)}
+              <FiPlus /> Create New AGH
             </Button>
           </ActionBar>
         </HeaderRow>
@@ -505,13 +356,6 @@ const CollegeAssessments = () => {
             onClick={() => handleTabChange("assigned")}
           >
             Assigned
-          </TabButton>
-          <TabButton
-            style={{ display: type === "agh" ? "none" : undefined }}
-            className={tabParam === "scheduled" ? "active" : ""}
-            onClick={() => handleTabChange("scheduled")}
-          >
-            Scheduled
           </TabButton>
           <TabButton
             className={tabParam === "available" ? "active" : ""}
@@ -549,7 +393,7 @@ const CollegeAssessments = () => {
               <AssessmentGrid>
                 {getSourceItems().map((item, index) => (
                   <AssessmentCard key={`${item._id}-${index}`}>
-                    {tabParam === "assigned" && type === "agh" && (
+                    {tabParam === "assigned" && (
                       <button
                         className="unassign-btn"
                         title="Delete Assessment"
@@ -577,8 +421,7 @@ const CollegeAssessments = () => {
                       </Meta>
                     )}
 
-                    {(type === "agh" || tabParam === "scheduled") &&
-                      item.startDateTime && (
+                    {item.startDateTime && (
                         <div
                           style={{
                             marginTop: "12px",
@@ -608,77 +451,30 @@ const CollegeAssessments = () => {
                       )}
 
                     <CardActions>
-                      {tabParam === "available" ? (
-                        <>
-                          {type === "agh" ? (
-                            <>
-                              <Button
-                                disabled={isAssigned(item._id)}
-                                onClick={() => {
-                                  const encodedCollegeName = encodeURIComponent(
-                                    persistentCollegeName || "",
-                                  );
-                                  navigate(
-                                    `/agh-assessments/assign-to-college/${item._id}?adminId=${adminId}&collegeName=${encodedCollegeName}`,
-                                  );
-                                }}
-                                style={{
-                                  padding: "6px 12px",
-                                  fontSize: "13px",
-                                }}
-                              >
-                                {isAssigned(item._id)
-                                  ? "Assigned"
-                                  : "Assign to College"}
-                              </Button>
-                            </>
-                          ) : (
-                            <>
-                              <Button
-                                disabled={isAssigned(item._id)}
-                                onClick={() => {
-                                  setConfirmAssignData({ id: item._id });
-                                  setComponentName("confirm-assign");
-                                  setPopupbox(true);
-                                }}
-                                style={{
-                                  padding: "6px 12px",
-                                  fontSize: "13px",
-                                }}
-                              >
-                                {isAssigned(item._id)
-                                  ? "Assigned"
-                                  : "Assign to College"}
-                              </Button>
-                            </>
-                          )}
-                        </>
-                      ) : (
-                        type !== "agh" && (
-                          <Button
-                            onClick={() => handleScheduleClick(item)}
-                            style={{ padding: "6px 12px", fontSize: "13px" }}
-                          >
-                            <FiCalendar style={{ marginRight: "4px" }} />
-                            {tabParam === "scheduled"
-                              ? "Reschedule"
-                              : "Schedule"}
-                          </Button>
-                        )
+                      {tabParam === "available" && (
+                        <Button
+                          disabled={isAssigned(item._id)}
+                          onClick={() => {
+                            const encodedCollegeName = encodeURIComponent(
+                              persistentCollegeName || "",
+                            );
+                            navigate(
+                              `/agh-assessments/assign-to-college/${item._id}?adminId=${adminId}&collegeName=${encodedCollegeName}`,
+                            );
+                          }}
+                          style={{
+                            padding: "6px 12px",
+                            fontSize: "13px",
+                          }}
+                        >
+                          {isAssigned(item._id) ? "Assigned" : "Assign to College"}
+                        </Button>
                       )}
 
                       {tabParam === "assigned" &&
-                        !(type === "agh" && item.createdBy === "admin") && (
+                        item.createdBy !== "admin" && (
                           <Button
-                            onClick={() => {
-                              if (type === "agh") {
-                                handleEditAssignedClick(item);
-                              } else {
-                                setSelectedSchedulingTest(item);
-                                setComponentName("edit-assigned");
-                                setPopupbox(true);
-                              }
-                            }}
+                            onClick={() => handleEditAssignedClick(item)}
                             style={{
                               padding: "6px 12px",
                               fontSize: "13px",
@@ -691,7 +487,7 @@ const CollegeAssessments = () => {
                           </Button>
                         )}
 
-                      {tabParam === "assigned" && type === "agh" && (
+                      {tabParam === "assigned" && (
                         <>
                           <Button
                             onClick={() => {
@@ -734,64 +530,6 @@ const CollegeAssessments = () => {
                             Details
                           </Button>
                         </>
-                      )}
-
-                      {tabParam === "scheduled" && (
-                        <Button
-                          onClick={() => {
-                            const resultsId =
-                              item.AptitudeTestsId ||
-                              item.adminTechnicalTest ||
-                              item._id;
-
-                            const encodedCollegeName = encodeURIComponent(
-                              persistentCollegeName || "",
-                            );
-                            let route = "";
-                            if (type === "agh") {
-                              route = `/agh-assessments/view/${item._id}?adminId=${adminId}&collegeName=${encodedCollegeName}`;
-                            } else if (type === "aptitude") {
-                              route = `/aptitude-test-list-admin-page/results/${resultsId}?adminId=${adminId}`;
-                            } else if (type === "technical") {
-                              route = `/technical-test-list-admin-page/results/${resultsId}?adminId=${adminId}`;
-                            }
-                            navigate(route);
-                          }}
-                          style={{
-                            padding: "6px 12px",
-                            fontSize: "13px",
-                            background: "#f2f4f7",
-                            color: "#344054",
-                          }}
-                        >
-                          View Results
-                        </Button>
-                      )}
-
-                      {type !== "agh" && (
-                        <Button
-                          onClick={() => {
-                            const detailsId =
-                              item.AptitudeTestsId ||
-                              item.adminTechnicalTest ||
-                              item._id;
-
-                            const route =
-                              type === "technical"
-                                ? `/technical-question-list-page-admin/${detailsId}?isGlobal=${!!item.isGlobal}`
-                                : `/question-list-page-admin/${detailsId}?isGlobal=${!!item.isGlobal}`;
-                            navigate(route);
-                          }}
-                          style={{
-                            padding: "6px 12px",
-                            fontSize: "13px",
-                            background: "transparent",
-                            color: "#475467",
-                            border: "1px solid #d0d5dd",
-                          }}
-                        >
-                          Details
-                        </Button>
                       )}
                     </CardActions>
                   </AssessmentCard>

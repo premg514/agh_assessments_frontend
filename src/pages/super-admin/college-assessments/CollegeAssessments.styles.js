@@ -125,29 +125,6 @@ export const CardActions = styled.div`
   margin-top: 14px;
 `;
 
-export const FormGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 16px;
-
-  .wide {
-    grid-column: 1 / -1;
-  }
-
-  button {
-    grid-column: 1 / -1;
-  }
-`;
-
-export const Field = styled.label`
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  color: #475467;
-  font-size: 13px;
-`;
-
 export const Input = styled.input`
   width: 100%;
   min-height: 40px;

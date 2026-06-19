@@ -712,36 +712,11 @@ export const DoughnutWrap = styled.div`
   }
 `;
 
-export const DoughnutCenter = styled.div`
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-`;
 
-export const DoughnutValue = styled.div`
-  font-size: 22px;
-  line-height: 1;
-  font-weight: 700;
-  color: ${({ theme }) => theme.text.primary};
 
-  @media (max-width: 560px) {
-    font-size: 18px;
-  }
-`;
 
-export const DoughnutLabel = styled.div`
-  margin-top: 0.35rem;
-  font-size: 12px;
-  color: ${({ theme }) => theme.text.secondary};
 
-  @media (max-width: 560px) {
-    font-size: 10px;
-  }
-`;
+
 
 export const ChartLegend = styled.div`
   display: flex;

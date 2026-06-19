@@ -3,14 +3,7 @@ import styled from "styled-components";
 
 const headerHeight = 58;
 
-export const TopHeader = styled.div`
-  height: ${headerHeight - 10 + "px"};
-  border-bottom: 1px solid ${({ theme }) => theme.border.primary};
 
-  @media screen and (min-width: 920px) {
-    height: ${headerHeight + "px"};
-  }
-`;
 
 export const Layout = styled.div`
   height: ${({ $additionHeight }) =>

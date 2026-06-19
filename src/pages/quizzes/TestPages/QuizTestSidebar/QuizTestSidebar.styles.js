@@ -40,33 +40,11 @@ export const Header = styled.div`
   }
 `;
 
-export const ProfileSection = styled.div`
-  display: flex;
-  align-items: center;
-`;
 
-export const ProfileImage = styled.img`
-  border-radius: 0.75rem; /* rounded-xl */
-  height: 2.5rem; /* h-10 */
-  width: 2.5rem; /* w-10 */
-  margin-right: 0.75rem; /* mr-3 */
-`;
 
-export const CloseButton = styled.button`
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: black;
-  display: flex;
-  align-items: center;
-  position: relative;
-  top: 1rem;
-  left: 0.5rem;
 
-  &:hover {
-    opacity: 0.8;
-  }
-`;
+
+
 
 export const Content = styled.div`
   /* gray-200 */

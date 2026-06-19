@@ -1,42 +1,17 @@
 import styled from "styled-components";
 
-export const TableRow = styled.tr`
-  border-bottom: 1px solid ${({ theme }) => theme.border.primary};
-  &.highlight {
-    background-color: ${({ theme }) => theme.body.primary.active} !important;
-  }
-`;
 
-export const TableCell = styled.td`
-  padding: 12px 16px;
 
-  &.title {
-    width: 100%;
-  }
-`;
+
 
 // Checkbox
-export const Checkbox = styled.input`
+const Checkbox = styled.input`
   width: 16px;
   height: 16px;
 `;
 
 // Problem Title
-export const ProblemTitle = styled.span`
-  color: ${({ theme }) => theme.link_sky_blue};
-  line-clamp: 1;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  max-width: 40ch;
-  font-weight: 500;
-  cursor: pointer;
 
-  &:hover {
-    text-decoration: underline;
-  }
-`;
 
 // Difficulty Badge
 export const DifficultyBadge = styled.div`
@@ -63,13 +38,4 @@ export const DifficultyBadge = styled.div`
       : "#ffebee"};
 `;
 
-export const ActionSection = styled.div`
-  display: flex;
-  gap: 20px;
 
-  & > button {
-    background-color: inherit;
-    border: none;
-    color: #737375;
-  }
-`;

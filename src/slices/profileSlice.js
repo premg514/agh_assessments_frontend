@@ -21,9 +21,6 @@ const profileSlice = createSlice({
     setUser(state, value) {
       state.user = value.payload;
     },
-    setLoading(state, value) {
-      state.loading = value.payload;
-    },
     setTestAccess(state, value) {
       state.testAccess = value.payload;
     },
@@ -39,7 +36,6 @@ const profileSlice = createSlice({
 });
 export const {
   setUser,
-  setLoading,
   setTestAccess,
   setElearningAccess,
   setCompanyAccess,

@@ -1227,21 +1227,6 @@ const defaultObejectOfArrayField = {
   sqlProblemsGetOnTest: difficultyConfig,
 };
 
-export const year = [
-  "2023",
-  "2024",
-  "2025",
-  "2026",
-  "2027",
-  "2028",
-  "2029",
-  "2030",
-  "2031",
-  "2032",
-  "2033",
-  "2034",
-];
-
 const CreateGroupAGHAssessment = ({ data, type, subType }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();

@@ -60,10 +60,7 @@ export const Container = styled.div`
   padding: 1rem;
 `;
 
-export const Title = styled.h2`
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
-`;
+
 
 export const Status = styled.div`
   font-weight: bold;

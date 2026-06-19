@@ -231,18 +231,6 @@ const assessmentSlice = createSlice({
       updateNavState(state);
     },
 
-    updateCodingCode: (state, action) => {
-      const { sectionIndex, questionIndex, code, language } = action.payload;
-
-      const question = state.sections[sectionIndex].questions[questionIndex];
-
-      question.codingProblem.userCode = code;
-      question.codingProblem.selectedLanguage = language;
-
-      const key = `${sectionIndex}-${questionIndex}`;
-      state.palette[key].answered = true;
-    },
-
     toggleReview: (state, action) => {
       const { sectionIndex, questionIndex } = action.payload;
       const key = `${sectionIndex}-${questionIndex}`;
@@ -401,7 +389,6 @@ const assessmentSlice = createSlice({
 export const {
   initializeAssessment,
   changeQuestion,
-  updateCodingCode,
   toggleReview,
   decreaseTimer,
   resetAssessment,

@@ -446,17 +446,4 @@ export const InputContainerWithIcon = styled.div`
     `}
 `;
 
-export const PasswordErrors = styled.ul`
-  display: grid;
-  grid-row-gap: 0.5rem;
-  grid-column-gap: 1rem;
-  padding: 0.5rem;
-  font-size: 14px;
-  transform: translateX(10px);
-  & > li {
-  }
 
-  @media screen and (min-width: 420px) {
-    grid-template-columns: 1fr 1fr;
-  }
-`;

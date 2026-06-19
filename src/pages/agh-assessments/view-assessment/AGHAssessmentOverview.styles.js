@@ -36,12 +36,7 @@ export const AssessmentMeta = styled.p`
   font-family: "DM Mono", monospace;
 `;
 
-export const BadgeGroup = styled.div`
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  align-items: center;
-`;
+
 
 // ─── Badge (Theme Based) ───────────────────────────────────────────────────
 

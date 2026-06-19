@@ -34,7 +34,7 @@ import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 const INITIAL_TABS = ["Description", "Result"];
-export const OUTPUT_INITIAL_TABS = ["Testcase", "Compile Output"];
+const OUTPUT_INITIAL_TABS = ["Testcase", "Compile Output"];
 
 const CodingProblemAGHAssessment = ({
   codingProblem,

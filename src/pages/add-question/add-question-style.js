@@ -1,13 +1,6 @@
 import styled from "styled-components";
 
-export const ModalWrapper = styled.div`
-  padding: 10px;
-  overflow-y: auto;
-  max-width: 800px;
-  width: 80vw;
-  max-height: calc(100vh - 200px);
-  background-color: ${({ theme }) => theme.body.secondary.base};
-`;
+
 
 export const AddQuestionStyle = styled.div`
   .bulk__upload__element {

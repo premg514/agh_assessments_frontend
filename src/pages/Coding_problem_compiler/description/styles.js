@@ -59,8 +59,4 @@ export const Container = styled.div`
   }
 `;
 
-export const Footer = styled.div`
-  border-top: 1px solid #e5e7eb;
-  background-color: #fff;
-  padding: 0.5rem;
-`;
+
